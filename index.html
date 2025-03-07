@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Cozy Campfire Pomodoro</title>
+    <!-- React & ReactDOM (Development versions) -->
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+    ></script>
+    <!-- Babel (for JSX in the browser) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+      /* BASIC RESETS */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        /* Dark red background */
+        background-color: #660F09;
+        color: #ffffff;
+        font-family: 'Arial', sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 2rem;
+      }
+
+      /* CONTAINER */
+      .pomodoro-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        max-width: 600px;
+        width: 100%;
+      }
+
+      /* TITLE */
+      .title {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        text-transform: lowercase;
+      }
+
+      /* SECTIONS */
+      .section {
+        width: 100%;
+        background-color: #895129; /* Brownish-orange */
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .section h2 {
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      /* SETTINGS SECTION */
+      .settings-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: center;
+      }
+      .settings-row label {
+        margin-right: 0.5rem;
+      }
+      .settings-row input {
+        width: 60px;
+        border: 1px solid #AD7A32; /* Warm brown */
+        background: transparent;
+        color: #ffffff;
+        padding: 0.3rem 0.5rem;
+        border-radius: 4px;
+        text-align: center;
+      }
+      .settings-row button {
+        border: 1px solid #AD7A32;
+        background: transparent;
+        color: #ffffff;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      .settings-row button:hover {
+        /* Olive-brown at 20% opacity */
+        background-color: rgba(138, 110, 41, 0.2);
+      }
+
+      /* SESSION TOGGLE */
+      .toggle-session {
+        display: inline-flex;
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+      .session-btn {
+        background-color: transparent;
+        border: 1px solid #AD7A32;
+        color: #ffffff;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+      }
+      .session-btn:hover {
+        background-color: rgba(138, 110, 41, 0.2);
+      }
+      .session-btn.active {
+        /* Olive-brown active state */
+        background-color: #8A6E29;
+        border-color: #8A6E29;
+        color: #ffffff;
+      }
+
+      /* TIMER SECTION */
+      .timer-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .timer-circle {
+        width: 200px;
+        height: 200px;
+        border: 3px solid #AD7A32; /* Warm brown border */
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 1rem;
+        position: relative;
+      }
+      .time-text {
+        font-size: 2.5rem;
+        font-weight: bold;
+      }
+
+      /* PROGRESS BAR */
+      .progress-bar {
+        width: 200px;
+        height: 10px;
+        background-color: rgba(173, 122, 50, 0.2); /* #AD7A32 at 20% opacity */
+        border-radius: 5px;
+        overflow: hidden;
+        margin-bottom: 1rem;
+      }
+      .progress {
+        height: 100%;
+        background-color: #8A6E29; /* Olive-brown fill */
+        width: 0%;
+        transition: width 1s linear;
+      }
+
+      /* TIMER CONTROLS */
+      .controls {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+      .start-pause-btn,
+      .reset-btn {
+        background-color: transparent;
+        border: 1px solid #AD7A32;
+        color: #ffffff;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+      }
+      .start-pause-btn:hover,
+      .reset-btn:hover {
+        background-color: rgba(138, 110, 41, 0.2);
+      }
+      .start-pause-btn.active {
+        background-color: #8A6E29;
+        border-color: #8A6E29;
+      }
+
+      /* SESSION COUNTER */
+      .session-counter {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      /* TO-DO LIST */
+      .todo-section ul {
+        list-style-type: none;
+        margin-top: 1rem;
+      }
+      .todo-section li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.25rem 0;
+      }
+      .todo-section li button {
+        background: transparent;
+        border: none;
+        color: #AD7A32; /* Warm brown for delete icon */
+        cursor: pointer;
+        font-size: 1.2rem;
+      }
+      .todo-input-row {
+        display: flex;
+        gap: 0.5rem;
+      }
+      .todo-input-row input {
+        flex: 1;
+        border: 1px solid #AD7A32;
+        background: transparent;
+        color: #ffffff;
+        padding: 0.3rem 0.5rem;
+        border-radius: 4px;
+      }
+      .todo-input-row button {
+        border: 1px solid #AD7A32;
+        background: transparent;
+        color: #ffffff;
+        padding: 0.3rem 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      .todo-input-row button:hover {
+        background-color: rgba(138, 110, 41, 0.2);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <!-- Audio element for sound notification -->
+    <audio id="alert-sound">
+      <source
+        src="https://www.soundjay.com/buttons/sounds/beep-07.mp3"
+        type="audio/mpeg"
+      />
+    </audio>
+
+    <script type="text/babel">
+      const { useState, useEffect, useRef } = React;
+
+      function PomodoroApp() {
+        // Default durations (in seconds)
+        const defaultWorkDuration = 25 * 60;
+        const defaultBreakDuration = 5 * 60;
+
+        // States for session durations
+        const [workDuration, setWorkDuration] = useState(defaultWorkDuration);
+        const [breakDuration, setBreakDuration] = useState(defaultBreakDuration);
+
+        // Timer states
+        const [isWorkSession, setIsWorkSession] = useState(true);
+        const [timeLeft, setTimeLeft] = useState(defaultWorkDuration);
+        const [isRunning, setIsRunning] = useState(false);
+        const [sessionCount, setSessionCount] = useState(0);
+        const timerRef = useRef(null);
+
+        // To-do list states
+        const [todo, setTodo] = useState("");
+        const [todos, setTodos] = useState([]);
+
+        // Audio ref for notifications
+        const audioRef = useRef(null);
+
+        // Start or pause the timer
+        const handleStartPause = () => {
+          if (isRunning) {
+            clearInterval(timerRef.current);
+            setIsRunning(false);
+          } else {
+            setIsRunning(true);
+            timerRef.current = setInterval(() => {
+              setTimeLeft((prev) => prev - 1);
+            }, 1000);
+          }
+        };
+
+        // Reset current session
+        const handleReset = () => {
+          clearInterval(timerRef.current);
+          setIsRunning(false);
+          setTimeLeft(isWorkSession ? workDuration : breakDuration);
+        };
+
+        // Switch sessions manually
+        const handleSessionToggle = (sessionType) => {
+          clearInterval(timerRef.current);
+          setIsRunning(false);
+          if (sessionType === "work") {
+            setIsWorkSession(true);
+            setTimeLeft(workDuration);
+          } else {
+            setIsWorkSession(false);
+            setTimeLeft(breakDuration);
+          }
+        };
+
+        // Update session durations from input
+        const handleCustomSettings = () => {
+          // If the timer isn't running, reset to the new durations immediately
+          if (!isRunning) {
+            setTimeLeft(isWorkSession ? workDuration : breakDuration);
+          }
+        };
+
+        // Automatically switch sessions when timer ends
+        useEffect(() => {
+          if (timeLeft <= 0) {
+            clearInterval(timerRef.current);
+            setIsRunning(false);
+            // Play sound notification
+            audioRef.current.play();
+            // Increase session count (only count work sessions)
+            if (isWorkSession) setSessionCount((prev) => prev + 1);
+
+            // Switch session type
+            if (isWorkSession) {
+              setIsWorkSession(false);
+              setTimeLeft(breakDuration);
+            } else {
+              setIsWorkSession(true);
+              setTimeLeft(workDuration);
+            }
+          }
+        }, [timeLeft, isWorkSession, workDuration, breakDuration]);
+
+        // Cleanup on unmount
+        useEffect(() => {
+          return () => clearInterval(timerRef.current);
+        }, []);
+
+        // Calculate progress percentage for the progress bar
+        const totalTime = isWorkSession ? workDuration : breakDuration;
+        const progressPercent = ((totalTime - timeLeft) / totalTime) * 100;
+
+        // Format time as mm:ss
+        const formatTime = (seconds) => {
+          const m = Math.floor(seconds / 60);
+          const s = seconds % 60;
+          return `${m.toString().padStart(2, "0")}:${s
+            .toString()
+            .padStart(2, "0")}`;
+        };
+
+        // To-do list functions
+        const addTodo = () => {
+          if (todo.trim() !== "") {
+            setTodos([...todos, todo.trim()]);
+            setTodo("");
+          }
+        };
+
+        const removeTodo = (index) => {
+          setTodos(todos.filter((_, i) => i !== index));
+        };
+
+        return (
+          <div className="pomodoro-container">
+            <h1 className="title">pomodoro</h1>
+
+            {/* SETTINGS SECTION */}
+            <div className="section">
+              <h2>Settings</h2>
+              <div className="settings-row">
+                <label>Work (min):</label>
+                <input
+                  type="number"
+                  value={Math.floor(workDuration / 60)}
+                  onChange={(e) =>
+                    setWorkDuration(Number(e.target.value) * 60)
+                  }
+                  min="1"
+                  placeholder="25"
+                />
+
+                <label>Break (min):</label>
+                <input
+                  type="number"
+                  value={Math.floor(breakDuration / 60)}
+                  onChange={(e) =>
+                    setBreakDuration(Number(e.target.value) * 60)
+                  }
+                  min="1"
+                  placeholder="5"
+                />
+
+                <button onClick={handleCustomSettings}>Apply</button>
+              </div>
+
+              <div className="toggle-session">
+                <button
+                  className={`session-btn ${isWorkSession ? "active" : ""}`}
+                  onClick={() => handleSessionToggle("work")}
+                >
+                  work
+                </button>
+                <button
+                  className={`session-btn ${!isWorkSession ? "active" : ""}`}
+                  onClick={() => handleSessionToggle("break")}
+                >
+                  break
+                </button>
+              </div>
+            </div>
+
+            {/* TIMER SECTION */}
+            <div className="section timer-section">
+              <h2>Timer</h2>
+              <div className="timer-circle">
+                <div className="time-text">{formatTime(timeLeft)}</div>
+              </div>
+
+              {/* PROGRESS BAR */}
+              <div className="progress-bar">
+                <div
+                  className="progress"
+                  style={{ width: progressPercent + "%" }}
+                ></div>
+              </div>
+
+              {/* CONTROL BUTTONS */}
+              <div className="controls">
+                <button
+                  className={`start-pause-btn ${isRunning ? "active" : ""}`}
+                  onClick={handleStartPause}
+                >
+                  {isRunning ? "Pause" : "Start"}
+                </button>
+                <button className="reset-btn" onClick={handleReset}>
+                  &#8635;
+                </button>
+              </div>
+
+              {/* SESSION COUNTER */}
+              <div className="session-counter">
+                Sessions Completed: {sessionCount}
+              </div>
+            </div>
+
+            {/* TO-DO LIST SECTION */}
+            <div className="section todo-section">
+              <h2>To-Do List</h2>
+              <div className="todo-input-row">
+                <input
+                  type="text"
+                  value={todo}
+                  onChange={(e) => setTodo(e.target.value)}
+                  placeholder="New task"
+                />
+                <button onClick={addTodo}>Add</button>
+              </div>
+              <ul>
+                {todos.map((task, index) => (
+                  <li key={index}>
+                    <span>{task}</span>
+                    <button onClick={() => removeTodo(index)}>×</button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Hidden audio element ref */}
+            <audio ref={audioRef} id="alert-sound">
+              <source
+                src="https://www.soundjay.com/buttons/sounds/beep-07.mp3"
+                type="audio/mpeg"
+              />
+            </audio>
+          </div>
+        );
+      }
+
+      ReactDOM.render(<PomodoroApp />, document.getElementById("root"));
+    </script>
+  </body>
+</html>

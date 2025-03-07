@@ -1,0 +1,110 @@
+/* General reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #1D2241; /* Dark navy background */
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  /* Container */
+  .pomodoro-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  /* Title */
+  .title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    text-transform: lowercase;
+  }
+  
+  /* Session toggle buttons */
+  .toggle-session {
+    display: inline-flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .session-btn {
+    background-color: transparent;
+    border: 1px solid #ffffff;
+    color: #ffffff;
+    padding: 0.5rem 1.5rem;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .session-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  .session-btn.active {
+    background-color: #ff6b6b;
+    border-color: #ff6b6b;
+    color: #ffffff;
+  }
+  
+  /* Timer circle */
+  .timer-circle {
+    width: 200px;
+    height: 200px;
+    border: 3px solid #ff6b6b;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem;
+    position: relative;
+  }
+  
+  .time-text {
+    font-size: 2.5rem;
+    font-weight: bold;
+  }
+  
+  /* Start/Pause button */
+  .start-pause-btn {
+    background-color: #ff6b6b;
+    border: none;
+    color: #ffffff;
+    padding: 0.75rem 2rem;
+    border-radius: 25px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-bottom: 1rem;
+    transition: background-color 0.3s;
+  }
+  
+  .start-pause-btn:hover {
+    background-color: #ff5a5a;
+  }
+  
+  /* Reset button */
+  .reset-btn {
+    background-color: transparent;
+    border: 2px solid #ffffff;
+    color: #ffffff;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .reset-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  
