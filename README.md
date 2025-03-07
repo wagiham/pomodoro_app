@@ -1,6 +1,4 @@
-Below is a sample README in Markdown format you can use for your GitHub repository:
 
-```markdown
 # Cozy Campfire Pomodoro Timer
 
 A single-file **React**-based Pomodoro Timer built with **JavaScript** that features customizable work and break durations, an animated progress bar, audio alerts, and a basic to-do list—all styled with a cozy "Cozy Campfire" color palette.
@@ -37,13 +35,3 @@ A single-file **React**-based Pomodoro Timer built with **JavaScript** that feat
 
 This project can be easily hosted as a static site (e.g., via GitHub Pages). To enable GitHub Pages, simply go to the repository settings, navigate to the **Pages** section, and select the main branch as your source.
 
-## License
-
-This project is open source and available under the [MIT License](LICENSE).
-
-## Acknowledgements
-
-Inspired by the Pomodoro Technique for time management and productivity.
-```
-
-Simply save this content as `README.md` in your project folder. Feel free to adjust any sections or details to suit your needs!
